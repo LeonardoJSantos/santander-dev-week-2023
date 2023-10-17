@@ -1,0 +1,28 @@
+package me.dio.Service.Impl;
+
+import me.dio.Service.UserService;
+import me.dio.Models.User;
+import me.dio.repository.UserRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
+
+@Service
+public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+    public UserServiceImpl(UserRepository userRepository){
+        this.userRepository = userRepository;
+    }
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    }
+
+    @Override
+    public User create(User userToCreate) throws IllegalAccessException {
+        if(userRepository.existsByAccountNumber(userToCreate.getAccount().getNumber()))
+            throw new IllegalAccessException("This Account Number already exists.");
+    return userRepository.save(userToCreate);
+  }
+}
